@@ -11,19 +11,9 @@ import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 
-/**
- * Note:  Added Environment vars GURU_USERNAME and USERNAME in run configuration.
- */
 @Configuration
-// @PropertySource({"classpath:datasource.properties", "classpath:jms.properties"})
-@PropertySources({
-    @PropertySource("classpath:datasource.properties"),
-    @PropertySource("classpath:jms.properties")
-})
 public class PropertyConfig {
 
-    @Autowired
-    Environment env;
 
     @Value("${guru.username}")
     String user;
@@ -47,10 +37,7 @@ public class PropertyConfig {
     @Bean
     public FakeDataSource fakeDataSource() {
         FakeDataSource fakeDataSource = new FakeDataSource();
-        // fakeDataSource.setUser(user);
-
-        // User env variable override instead of exteernalized property.
-        fakeDataSource.setUser(env.getProperty("USERNAME"));
+        fakeDataSource.setUser(user);
         fakeDataSource.setPassword(password);
         fakeDataSource.setUrl(url);
         return fakeDataSource;
@@ -65,12 +52,4 @@ public class PropertyConfig {
         return fakeJmsBroker;
     }
 
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer properties() {
-
-        // This scans for property files and allows us to use @Value annotation.
-        PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer = new PropertySourcesPlaceholderConfigurer();
-        return propertySourcesPlaceholderConfigurer;
-
-    }
 }
